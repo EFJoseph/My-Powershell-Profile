@@ -1,0 +1,21 @@
+for this to work you will need to have vim installed in the default location on your comp.
+
+
+the following items will need to be defined in your Posh profile
+-for the JVPN-Connect to work you will need to set this variable up:
+$global:VPN = @{'<connection name>' = '<username>'}
+
+
+-for the JRemote to work you will need to set this variable up:
+$global:RDC = @{
+	'<servername1>' = '/v:<ip1>';
+	'<servername2>' = '/v:<ip2>';
+}
+
+
+-you will also need to point POST_HOME to this directory:
+$global:POSH_HOME = 'C:\<pathToFiles>'
+
+
+to wire it all up use this:
+. ($global:POSH_HOME + 'profile.ps1')
