@@ -19,3 +19,8 @@ $global:POSH_HOME = 'C:\<pathToFiles>'
 
 to wire it all up use this:
 . ($global:POSH_HOME + 'profile.ps1')
+
+
+thanks to EFMark's https://github.com/EFMark/PowerGit
+and
+dahlbyk's https://github.com/dahlbyk/posh-git
