@@ -29,7 +29,7 @@ Set-Alias vim  $VIMPATH
 # for editing your Vim settings
 Function Edit-Vimrc
 {
-    vim $home\_vimrc
+    vim ~\_vimrc
 }
 #endregion
 ###############
@@ -51,7 +51,7 @@ Function Build(){
 		$preBuildDevelopmentProcessIDs = get-process dev* | %{$_.id}
 	
 		#Start a visual studio session for every solution file found under the root
-		$slns | %{devenv $_ /build Debug}
+		$slns | %{vs $_ /build Debug}
 		
 		$postBuildDevelopmentProcessIDs = get-process dev* | %{$_.id}
 		
@@ -98,7 +98,7 @@ Function Edit-Host
 
 Function Edit-Profile
 {
-    vim 'C:\Users\Joseph\Documents\My Dropbox\work\Posh\profile.ps1' 
+    vim ($global:POSH_HOME + '\profile.ps1')
 }
 
 Function JRemote([string]$key)
