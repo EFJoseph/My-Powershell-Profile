@@ -3,17 +3,16 @@
 Set-Alias gs Get-Service
 
 # Load posh-git example profile
-. ($global:POSH_HOME + '\posh-git\profile.example.ps1')
+. ($global:POSH_HOME + '\posh-git\profile.example.ps1') #be sure to set the $global:POSH_HOME variable correctly in your profile before importing this file
 #endregion
 ###############
 
 
 ###############
 #region aliases
-New-Alias n++ 'C:\Program Files (x86)\Notepad++\notepad++.exe'
-New-Alias vs 'C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe'
-New-Alias Elastic 'C:\Projects\elasticsearch-0.17.7\bin\elasticsearch.bat'
+New-Alias vs $global:VISUAL_STUDIO
 New-Alias EX explorer.exe
+New-Alias subl $global:SUBL_PATH
 #endregion
 ###############
 
@@ -42,26 +41,26 @@ Function Build(){
 	{
 		$Directory = [System.IO.Directory];
 		$Thread = [System.Threading.Thread];
-		
+
 		$currDir = Convert-Path (Get-Location -PSProvider FileSystem)
 		$sourceDir = $currDir + "\Source\";
-		
+
 		$slns = $Directory::GetFiles($sourceDir, "*.sln", "AllDirectories");
-	
+
 		$preBuildDevelopmentProcessIDs = get-process dev* | %{$_.id}
-	
+
 		#Start a visual studio session for every solution file found under the root
 		$slns | %{vs $_ /build Debug}
-		
+
 		$postBuildDevelopmentProcessIDs = get-process dev* | %{$_.id}
-		
+
 		if($preBuildDevelopmentProcessIDs -ne $nothing){
 			$buildProcessId = (Compare-Object $preBuildDevelopmentProcessIDs $postBuildDevelopmentProcessIDs | Where{ $_.SideIndicator -eq '=>'}).InputObject
 		}
 		else{
 			$buildProcessId = $postBuildDevelopmentProcessIDs
 		}
-		
+
 		Write-Host 'Building .' -noNewLine
 		do{
 			$Thread::Sleep(1000)
@@ -80,12 +79,12 @@ Function Dev(){
 	if (IsGitDirectory)
 	{
 		$Directory = [System.IO.Directory];
-		
+
 		$currDir = Convert-Path (Get-Location -PSProvider FileSystem)
 		$sourceDir = $currDir + "\Source\";
-		
+
 		$slns = $Directory::GetFiles($sourceDir, "*.sln", "AllDirectories");
-	
+
 		#Start a visual studio session for every solution file found under the root
 		$slns | %{vs $_}
 	}
@@ -93,12 +92,12 @@ Function Dev(){
 
 Function Edit-Host
 {
-    vim C:\Windows\System32\drivers\etc\hosts
+    subl C:\Windows\System32\drivers\etc\hosts
 }
 
 Function Edit-Profile
 {
-    vim ($global:POSH_HOME + '\profile.ps1')
+    subl ($global:POSH_HOME + '\profile.ps1')
 }
 
 Function JRemote([string]$key)
@@ -108,7 +107,7 @@ Function JRemote([string]$key)
 
 Function JVPN-Connect([string]$vpn){
 	$connected = ((ping livedb -n 1 -w 10).count -eq 8) #would be 6 if we aren't connected
-	
+
 	if(-not $connected){
 		#there was no open connection go ahead and open it
 		rasdial $vpn $global:VPN[$vpn] *
@@ -117,9 +116,19 @@ Function JVPN-Connect([string]$vpn){
 		if(Ask-YesOrNo -message 'Your connection is currently open would you like to close it?'){
 			rasdial $vpn /d
 		}
-		#the connection was already open when this was called 
+		#the connection was already open when this was called
 		#so just close the connection and don't do anything else
 	}
+}
+
+Function JLog([string]$fileKey)
+{
+  notepad $global:LOGS[$fileKey]
+}
+
+Function JSSH([string]$sshKey)
+{
+	ssh ('root@' + $global:SSH[$sshKey])
 }
 #endregion
 ###############
@@ -129,22 +138,22 @@ Function JVPN-Connect([string]$vpn){
 #region helpers
 Function Ask-YesOrNo(){
 	param([string]$title="",[string]$message="Are you sure?")
-	
+
 	$choiceYes = New-Object System.Management.Automation.Host.ChoiceDescription "&Yes", "Answer Yes."
 	$choiceNo = New-Object System.Management.Automation.Host.ChoiceDescription "&No", "Answer No."
-	
+
 	$options = [System.Management.Automation.Host.ChoiceDescription[]]($choiceYes, $choiceNo)
-	
+
 	$result = $host.ui.PromptForChoice($title, $message, $options, 1)
-		
+
 	switch ($result)
 	{
-		0 
+		0
 		{
 		Return $true
 		}
 
-		1 
+		1
 		{
 		Return $false
 		}

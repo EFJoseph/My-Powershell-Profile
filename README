@@ -16,6 +16,15 @@ $global:RDC = @{
 -you will also need to point POST_HOME to this directory:
 $global:POSH_HOME = 'C:\<pathToFiles>'
 
+-this for the logging functionality
+$global:LOGS = @{
+    'work' = '<pathToLogFile>;
+}
+
+-this is for the ssh connections
+$global:SSH = @{
+    '<key>' = '<ip>';
+}
 
 to wire it all up use this:
 . ($global:POSH_HOME + 'profile.ps1')
