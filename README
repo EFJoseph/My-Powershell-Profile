@@ -27,7 +27,7 @@ $global:SSH = @{
 }
 
 to wire it all up use this:
-. ($global:POSH_HOME + 'profile.ps1')
+. ($global:POSH_HOME + '\profile.ps1')
 
 
 thanks to EFMark's https://github.com/EFMark/PowerGit
