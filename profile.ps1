@@ -97,7 +97,7 @@ Function Edit-Host
 
 Function Edit-Profile
 {
-    subl ($global:POSH_HOME + '\profile.ps1')
+    subl ($global:POSH_HOME + '\..\Microsoft.Powershell_profile.ps1')
 }
 
 Function JRemote([string]$key)
@@ -123,7 +123,7 @@ Function JVPN-Connect([string]$vpn){
 
 Function JLog([string]$fileKey)
 {
-  notepad $global:LOGS[$fileKey]
+	notepad $global:LOGS[$fileKey]
 }
 
 Function JSSH([string]$sshKey)
